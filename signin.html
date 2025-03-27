@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In / Sign Up - navnirman.ai</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            color: #fff;
+            height: 100vh;
+            background-image: linear-gradient(to right, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.9)), url('grid-pattern.png');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: url('side-pattern.png') no-repeat left center;
+            background-size: contain;
+            opacity: 0.3;
+        }
+
+        main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+
+        .form-container {
+            background: rgba(0, 0, 0, 0.9);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+            text-align: center;
+            width: 320px;
+        }
+
+        .form-container h2 {
+            color: #0f0;
+            margin-bottom: 20px;
+        }
+
+        .form-container input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+            background: #222;
+            color: #fff;
+            outline: none;
+        }
+
+        .form-btn {
+            background-color: #0f0;
+            color: black;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+            transition: 0.3s;
+            text-transform: uppercase;
+            box-shadow: 0 0 10px #0f0;
+        }
+
+        .form-btn:hover {
+            background-color: #00cc00;
+            box-shadow: 0 0 15px #00cc00;
+        }
+
+        .switch {
+            margin-top: 10px;
+        }
+
+        .switch a {
+            color: #0f0;
+            text-decoration: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .error-message {
+            color: #ff4444;
+            margin: 10px 0;
+            display: none;
+        }
+
+        .success-message {
+            color: #0f0;
+            margin: 10px 0;
+            display: none;
+        }
+
+        .loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+    </style>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDtOWJd8duOmOctCfEQQESRY817v5dRH1k",
+            authDomain: "navnirmanai-1a761.firebaseapp.com",
+            projectId: "navnirmanai-1a761",
+            storageBucket: "navnirmanai-1a761.firebasestorage.app",
+            messagingSenderId: "569693452065",
+            appId: "1:569693452065:web:01f06b54409835539bb060",
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+
+        function showMessage(elementId, message, isError = false) {
+            const messageElement = document.getElementById(elementId);
+            messageElement.textContent = message;
+            messageElement.style.display = 'block';
+            messageElement.style.color = isError ? '#ff4444' : '#0f0';
+        }
+
+        function hideMessage(elementId) {
+            document.getElementById(elementId).style.display = 'none';
+        }
+
+        function setLoading(isLoading) {
+            const forms = document.querySelectorAll('.form-container');
+            forms.forEach(form => {
+                if (isLoading) {
+                    form.classList.add('loading');
+                } else {
+                    form.classList.remove('loading');
+                }
+            });
+        }
+
+        async function handleSignUp(event) {
+            event.preventDefault();
+            setLoading(true);
+            hideMessage('signup-error');
+            hideMessage('signup-success');
+
+            const name = document.getElementById('signup-name').value;
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+            const confirmPassword = document.getElementById('signup-confirm-password').value;
+
+            if (password !== confirmPassword) {
+                showMessage('signup-error', 'Passwords do not match', true);
+                setLoading(false);
+                return;
+            }
+
+            try {
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                await userCredential.user.updateProfile({
+                    displayName: name
+                });
+                showMessage('signup-success', 'Account created successfully!');
+                setTimeout(() => {
+                    toggleForm();
+                }, 2000);
+            } catch (error) {
+                showMessage('signup-error', error.message, true);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        async function handleSignIn(event) {
+            event.preventDefault();
+            setLoading(true);
+            hideMessage('signin-error');
+
+            const email = document.getElementById('signin-email').value;
+            const password = document.getElementById('signin-password').value;
+
+            try {
+                await auth.signInWithEmailAndPassword(email, password);
+                window.location.href = 'index.html';
+            } catch (error) {
+                showMessage('signin-error', error.message, true);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        function toggleForm() {
+            const signInForm = document.getElementById("sign-in-form");
+            const signUpForm = document.getElementById("sign-up-form");
+            
+            if (signInForm.style.display === "none") {
+                signInForm.style.display = "block";
+                signUpForm.style.display = "none";
+            } else {
+                signInForm.style.display = "none";
+                signUpForm.style.display = "block";
+            }
+        }
+    </script>
+</head>
+<body>
+    <main>
+        <div class="form-container" id="sign-in-form">
+            <h2>Sign In</h2>
+            <form onsubmit="handleSignIn(event)">
+                <input type="email" id="signin-email" placeholder="Email" required>
+                <input type="password" id="signin-password" placeholder="Password" required>
+                <div id="signin-error" class="error-message"></div>
+                <button type="submit" class="form-btn">Sign In</button>
+            </form>
+            <div class="switch">
+                <p>Don't have an account? <a onclick="toggleForm()">Sign Up</a></p>
+            </div>
+        </div>
+
+        <div class="form-container" id="sign-up-form" style="display: none;">
+            <h2>Sign Up</h2>
+            <form onsubmit="handleSignUp(event)">
+                <input type="text" id="signup-name" placeholder="Full Name" required>
+                <input type="email" id="signup-email" placeholder="Email" required>
+                <input type="password" id="signup-password" placeholder="Password" required>
+                <input type="password" id="signup-confirm-password" placeholder="Confirm Password" required>
+                <div id="signup-error" class="error-message"></div>
+                <div id="signup-success" class="success-message"></div>
+                <button type="submit" class="form-btn">Sign Up</button>
+            </form>
+            <div class="switch">
+                <p>Already have an account? <a onclick="toggleForm()">Sign In</a></p>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

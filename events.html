@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book an Event - navnirman.ai</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+    <!-- Add Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <style>
+    /* Main content styling */
+main {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 2rem;
+}
+
+main h2 {
+    text-align: center;
+    margin-bottom: 1rem;
+    color: #4CAF50;
+    font-size: 2rem;
+}
+
+main > p {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #666;
+    font-size: 1.1rem;
+}
+
+.event-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    margin: 0 auto 3rem;
+    max-width: 1000px; /* This limits the overall width */
+}
+
+/* To create a fixed-width option, you could also use: */
+@media (min-width: 768px) {
+    .event-container {
+        grid-template-columns: repeat(2, minmax(280px, 320px));
+        justify-content: center;
+    }
+}
+/* Individual event box styling */
+.event-box {
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.event-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+}
+
+/* Event image styling */
+.event-image {
+    width: 100%;
+    height: 250px; /* Increased from 200px */
+    overflow: hidden;
+}
+
+.event-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s;
+}
+
+.event-box:hover .event-image img {
+    transform: scale(1.05);
+}
+
+/* Event details section */
+.event-details {
+    padding: 2rem;
+}
+
+.event-details h3 {
+    margin-bottom: 1rem;
+    color: #333;
+    font-size: 1.5rem; /* Increased from 1.3rem */
+}
+
+/* Event metadata styling */
+.event-meta {
+    display: flex;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    color: #666;
+    flex-wrap: wrap;
+}
+
+.event-meta div {
+    margin-right: 1rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+}
+
+.event-meta i {
+    margin-right: 0.5rem;
+    color: #4CAF50;
+}
+
+.event-details p {
+    margin-bottom: 1.5rem;
+    line-height: 1.8; /* Increased from 1.6 */
+    color: #555;
+}
+/* Book now button styling */
+.book-btn {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 0.7rem 1.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+    width: 100%;
+    font-size: 1rem;
+}
+
+.book-btn:hover {
+    background-color: #388E3C;
+}
+
+/* Featured/Detailed events section */
+.detailed-events {
+    margin-top: 4rem;
+}
+
+.detailed-event {
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    margin-bottom: 2rem;
+    display: flex;
+    flex-direction: column;
+}
+
+@media (min-width: 768px) {
+    .detailed-event {
+        flex-direction: row;
+    }
+}
+
+.detailed-event-image {
+    flex: 0 0 40%;
+}
+
+.detailed-event-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.detailed-event-content {
+    flex: 1;
+    padding: 2rem;
+}
+
+.detailed-event-content h3 {
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+    color: #333;
+}
+
+.detailed-event-meta {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+}
+
+.detailed-event-meta div {
+    margin-right: 1.5rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    color: #666;
+    font-size: 0.95rem;
+}
+
+.detailed-event-meta i {
+    margin-right: 0.5rem;
+    color: #4CAF50;
+}
+
+.detailed-event-content p {
+    margin-bottom: 1rem;
+    line-height: 1.7;
+    color: #555;
+}
+
+/* Modal styling */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    overflow: auto;
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 5% auto;
+    padding: 2rem;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 600px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    position: relative;
+}
+
+.close {
+    position: absolute;
+    right: 1.5rem;
+    top: 1rem;
+    font-size: 2rem;
+    cursor: pointer;
+    color: #aaa;
+    transition: color 0.3s;
+}
+
+.close:hover {
+    color: #333;
+}
+
+/* Form styling */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #444;
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+}
+
+.form-control:focus {
+    border-color: #4CAF50;
+    outline: none;
+}
+
+/* Confirmation message styling */
+.confirmation {
+    padding: 1rem;
+    background-color: #E8F5E9;
+    border-radius: 4px;
+    margin: 1rem 0;
+    text-align: center;
+    display: none;
+    color: #2E7D32;
+    border-left: 4px solid #4CAF50;
+}
+
+/* Profile Section Styles */
+.profile-section {
+    display: none;
+    position: relative;
+    padding: 15px 25px;
+    border-radius: 22px;
+    transition: all 0.3s ease;
+    margin-left: 15px;
+    background: #1b5e20;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.2), 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.profile-section.active {
+    display: flex;
+    align-items: center;
+    border: none;
+}
+
+.profile-section:hover {
+    background: #154a19;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.1), 0 2px 6px rgba(0,0,0,0.3);
+}
+
+.profile-dropdown {
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
+    right: 0;
+    top: 130%;
+    background: rgba(0, 0, 0, 0.95);
+    padding: 20px;
+    border-radius: 15px;
+    min-width: 250px;
+    z-index: 1000;
+    box-shadow: 0 8px 32px rgba(0, 255, 0, 0.2);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 255, 0, 0.1);
+    transform: translateY(10px);
+    transition: all 0.3s ease, visibility 0.3s ease;
+    pointer-events: none;
+}
+
+/* Add padding to create hoverable area */
+.profile-dropdown::after {
+    content: '';
+    position: absolute;
+    top: -20px;
+    left: 0;
+    right: 0;
+    height: 20px;
+}
+
+/* Add the dropdown arrow */
+.profile-dropdown::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    right: 25px;
+    width: 15px;
+    height: 15px;
+    background: rgba(0, 0, 0, 0.95);
+    transform: rotate(45deg);
+    border-left: 1px solid rgba(0, 255, 0, 0.1);
+    border-top: 1px solid rgba(0, 255, 0, 0.1);
+}
+
+/* Make dropdown stay visible when hovering the dropdown itself */
+.profile-section:hover {
+    background: rgba(0, 255, 0, 0.25);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 255, 0, 0.2);
+}.profile-dropdown,
+.profile-dropdown:hover {
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+    transition-delay: 0s;
+}
+
+/* Add hover intent - small delay before hiding */
+.profile-section:not(:hover) .profile-dropdown:not(:hover) {
+    visibility: hidden;
+    opacity: 0;
+    transform: translateY(10px);
+    transition-delay: 0.3s;
+}
+
+.profile-dropdown a {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    color: #fff;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border-radius: 10px;
+    margin-bottom: 5px;
+    font-size: 1rem;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+}
+
+.profile-dropdown a i {
+    margin-right: 12px;
+    color: #a8d641;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    min-width: 20px;
+    text-align: center;
+}
+
+.profile-dropdown a:hover {
+    background-color: rgba(168, 214, 65, 0.15);
+    transform: translateX(5px);
+    padding-left: 20px;
+}
+
+.profile-dropdown a:hover i {
+    transform: scale(1.1);
+}
+
+.profile-name {
+    color: rgb(255, 255, 255);
+    text-decoration: none;
+    font-weight: 400;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    font-size: 1.05rem;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+    text-shadow: 0 1px 1px rgba(0,0,0,0.2);
+}
+
+.profile-name i {
+    margin-left: 8px;
+    transition: transform 0.3s ease;
+    font-size: 1rem;
+    opacity: 0.9;
+}
+
+.profile-section:hover .profile-name i {
+    transform: rotate(180deg);
+}
+
+.profile-dropdown .menu-divider {
+    height: 1px;
+    background: rgba(168, 214, 65, 0.1);
+    margin: 10px 0;
+}
+
+.profile-dropdown .sign-out {
+    color: #ff4444;
+    border-top: 1px solid rgba(255, 68, 68, 0.1);
+    margin-top: 5px;
+}
+
+.profile-dropdown .sign-out:hover {
+    background-color: rgba(255, 68, 68, 0.1);
+}
+
+.auth-hidden {
+    display: none !important;
+}
+
+/* Add padding below profile section to create hoverable area */
+.profile-section::after {
+    content: '';
+    position: absolute;
+    bottom: -20px;
+    left: 0;
+    right: 0;
+    height: 20px;
+}
+
+</style>
+
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <a href="index.html">
+                <img src="pic1.png" alt="navnirman.ai Logo">
+            </a>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="services.html">Services</a></li>
+                <li><a href="events.html">Book an Event</a></li>
+                <li><a href="signin.html" class="auth-btn">Sign In / Up</a></li>
+                <li class="profile-section">
+                    <a href="#" class="profile-name">
+                        Profile
+                        <i class="bi bi-chevron-down"></i>
+                    </a>
+                    <div class="profile-dropdown">
+                        <a href="profile.html">
+                            <i class="bi bi-person-circle"></i>
+                            My Profile
+                        </a>
+                        <div class="menu-divider"></div>
+                        <a href="support.html">
+                            <i class="bi bi-headset"></i>
+                            Customer Support
+                        </a>
+                        <a href="settings.html">
+                            <i class="bi bi-gear"></i>
+                            Settings
+                        </a>
+                        <div class="menu-divider"></div>
+                        <a href="#" class="sign-out" onclick="signOut()">
+                            <i class="bi bi-box-arrow-right"></i>
+                            Sign Out
+                        </a>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    
+    <main>
+        <h2>Upcoming Events</h2>
+        <p>Join our e-waste awareness programs and community drives.</p>
+        
+        <section class="event-container">
+            <div class="event-box">
+                <div class="event-image">
+                    <img src="pic2.webp" alt="Community E-Waste Drive">
+                </div>
+                <div class="event-details">
+                    <h3>Community E-Waste Drive</h3>
+                    <div class="event-meta">
+                        <div><i class="far fa-calendar"></i> April 15, 2025</div>
+                        <div><i class="far fa-clock"></i> 10:00 AM - 4:00 PM</div>
+                    </div>
+                    <p>Join us in collecting e-waste and spreading awareness about responsible disposal methods. Every participant will receive a certificate of contribution.</p>
+                    <button class="book-btn" onclick="openModal('Community E-Waste Drive', 'April 15, 2025', '10:00 AM - 4:00 PM')">Book Now</button>
+                </div>
+            </div>
+            <div class="event-box">
+                <div class="event-image">
+                    <img src="pic4.jpg" alt="Educational Workshop">
+                </div>
+                <div class="event-details">
+                    <h3>Educational Workshop</h3>
+                    <div class="event-meta">
+                        <div><i class="far fa-calendar"></i> April 22, 2025</div>
+                        <div><i class="far fa-clock"></i> 2:00 PM - 5:00 PM</div>
+                    </div>
+                    <p>Learn about responsible e-waste management and the environmental impact of electronic waste. Interactive sessions with industry experts.</p>
+                    <button class="book-btn" onclick="openModal('Educational Workshop', 'April 22, 2025', '2:00 PM - 5:00 PM')">Book Now</button>
+                </div>
+            </div>
+        </section>
+        
+        <section class="detailed-events">
+            <h2>Featured Event</h2>
+            
+            <div class="detailed-event">
+                <div class="detailed-event-image">
+                    <img src="pic3.jpg" alt="Annual E-Waste Collection Drive">
+                </div>
+                <div class="detailed-event-content">
+                    <h3>International E-waste Day Summit</h3>
+                    <div class="detailed-event-meta">
+                        <div><i class="far fa-calendar"></i> October 14, 2025</div>
+                        <div><i class="far fa-clock"></i> 11:00 AM - 8:00 PM</div>
+                        <div><i class="fas fa-map-marker-alt"></i> Across Mumbai City</div>
+                        <div><i class="fas fa-users"></i> Expected participants: 100+</div>
+                    </div>
+                    <p>Our flagship annual event where we collect e-waste from across Mumbai city. Multiple collection points will be set up in various localities. Participants can bring their old electronic items for responsible disposal.</p>
+                    <p>The event will also feature educational booths, interactive displays about e-waste management, and workshops on upcycling electronic components into useful items.</p>
+                    <p>Corporate partners are welcome to participate and set up their own collection booths.</p>
+                    <button class="book-btn" onclick="openModal('Annual E-Waste Collection Drive', 'October 14, 2025', '11:00 AM - 8:00 PM')">Register for This Event</button>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Booking Modal -->
+    <div id="bookingModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 id="modalTitle">Book Event</h2>
+            <div id="confirmation" class="confirmation">
+                <p>Your booking has been confirmed! We've sent the details to your email.</p>
+            </div>
+            <form id="bookingForm">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="eventDate">Event Date</label>
+                    <input type="text" id="eventDate" class="form-control" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="eventTime">Event Time</label>
+                    <input type="text" id="eventTime" class="form-control" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="participants">Number of Participants</label>
+                    <select id="participants" class="form-control">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5+">5+</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="notes">Additional Notes</label>
+                    <textarea id="notes" class="form-control" rows="3"></textarea>
+                </div>
+                <button type="submit" class="book-btn">Confirm Booking</button>
+            </form>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="footer-column">
+            <h3>Company</h3>
+            <ul>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="services.html">Our Services</a></li>
+                <li><a href="#">Privacy Policy</a></li>
+            </ul>
+        </div>
+        <div class="footer-column">
+            <h3>Get Help</h3>
+            <ul>
+                <li><a href="#">FAQ</a></li>
+                <li><a href="#">Status</a></li>
+                <li><a href="#">Payment Options</a></li>
+            </ul>
+        </div>
+        <div class="footer-column">
+            <h3>Contact us</h3>
+            <ul>
+                <li><a href="mailto:navnirman.ai@gmail.com">navnirman.ai@gmail.com</a></li>
+                <li><a href="tel:9967960193">9967960193</a></li>
+            </ul>
+        </div>
+    </footer>
+
+    <script>
+        // Modal functionality
+        const modal = document.getElementById("bookingModal");
+        const form = document.getElementById("bookingForm");
+        const confirmation = document.getElementById("confirmation");
+        
+        function openModal(eventName, date, time) {
+            document.getElementById("modalTitle").textContent = "Book: " + eventName;
+            document.getElementById("eventDate").value = date;
+            document.getElementById("eventTime").value = time;
+            modal.style.display = "block";
+            confirmation.style.display = "none";
+        }
+        
+        function closeModal() {
+            modal.style.display = "none";
+            form.reset();
+        }
+        
+        // Form submission
+        form.addEventListener("submit", function(e) {
+            e.preventDefault();
+            // In a real application, you would send this data to your server
+            confirmation.style.display = "block";
+            setTimeout(function() {
+                closeModal();
+            }, 3000);
+        });
+        
+        // Close modal if clicked outside
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDtOWJd8duOmOctCfEQQESRY817v5dRH1k",
+            authDomain: "navnirmanai-1a761.firebaseapp.com",
+            projectId: "navnirmanai-1a761",
+            storageBucket: "navnirmanai-1a761.firebasestorage.app",
+            messagingSenderId: "569693452065",
+            appId: "1:569693452065:web:01f06b54409835539bb060"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+
+        // Wait for DOM to be ready
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get elements
+            const signInBtn = document.querySelector('.auth-btn');
+            const profileSection = document.querySelector('.profile-section');
+
+            // Hide both elements initially
+            signInBtn.classList.add('auth-hidden');
+            profileSection.classList.add('auth-hidden');
+
+            // Auth state observer
+            auth.onAuthStateChanged((user) => {
+                if (user) {
+                    // User is signed in
+                    signInBtn.classList.add('auth-hidden');
+                    profileSection.classList.remove('auth-hidden');
+                    profileSection.classList.add('active');
+                    
+                    // Update profile name
+                    const profileName = document.querySelector('.profile-name');
+                    profileName.textContent = user.displayName || user.email;
+                } else {
+                    // User is signed out
+                    signInBtn.classList.remove('auth-hidden');
+                    profileSection.classList.add('auth-hidden');
+                    profileSection.classList.remove('active');
+                }
+            });
+        });
+
+        // Sign out function
+        function signOut() {
+            auth.signOut().then(() => {
+                window.location.href = 'index.html';
+            }).catch((error) => {
+                console.error('Error signing out:', error);
+            });
+        }
+    </script>
+</body>
+</html>

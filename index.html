@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>navnirman.ai - Smart E-Waste Management</title>
+    
+    <!-- Add Bootstrap CSS first -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Add Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
+    <!-- Your custom CSS -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Remove Bootstrap JS from here -->
+    <style>
+        /* Chatbot Container Styles */
+        .chatbot-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+       
+        /* Chatbot Toggle Button */
+        .chatbot-button {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: #4CAF50;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+       
+        .chatbot-button:hover {
+            background-color: #3e8e41;
+        }
+       
+        .chatbot-button img {
+            width: 30px;
+            height: 30px;
+        }
+       
+        /* Chatbot Interface Styles */
+        .chatbot-interface {
+            position: absolute;
+            bottom: 70px;
+            right: 0;
+            width: 350px;
+            height: 500px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+       
+        .chatbot-interface.active {
+            display: flex;
+        }
+       
+        /* Chatbot Header */
+        .chatbot-header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+       
+        .chatbot-title {
+            display: flex;
+            align-items: center;
+        }
+       
+        .chatbot-title img {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+        }
+       
+        .chatbot-close {
+            cursor: pointer;
+            font-size: 18px;
+        }
+       
+        /* Chatbot Messages Area */
+        .chatbot-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+       
+        .message {
+            max-width: 80%;
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            border-radius: 18px;
+            line-height: 1.4;
+            position: relative;
+            word-wrap: break-word;
+        }
+       
+        .bot-message {
+            background-color: #f1f1f1;
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
+        }
+       
+        .user-message {
+            background-color: #DCF8C6;
+            align-self: flex-end;
+            border-bottom-right-radius: 5px;
+        }
+       
+        /* Quick Reply Buttons */
+        .quick-replies {
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+            align-self: flex-start;
+        }
+       
+        .quick-reply {
+            background-color: #e9f5ff;
+            color: #0078D7;
+            border: 1px solid #0078D7;
+            border-radius: 15px;
+            padding: 5px 10px;
+            margin: 5px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: background-color 0.2s;
+        }
+       
+        .quick-reply:hover {
+            background-color: #d0e9ff;
+        }
+       
+        /* Typing Indicator */
+        .typing-indicator {
+            display: none;
+            align-self: flex-start;
+            background-color: #f1f1f1;
+            padding: 8px 15px;
+            border-radius: 18px;
+            margin-bottom: 10px;
+        }
+       
+        .typing-indicator span {
+            height: 8px;
+            width: 8px;
+            background-color: #999;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 5px;
+            animation: typing 1s infinite ease-in-out;
+        }
+       
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+       
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0.4s;
+            margin-right: 0;
+        }
+       
+        @keyframes typing {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+            100% { transform: translateY(0px); }
+        }
+       
+        /* Chatbot Input Area */
+        .chatbot-input {
+            display: flex;
+            padding: 10px;
+            border-top: 1px solid #e9e9e9;
+            background-color: #f9f9f9;
+        }
+       
+        .chatbot-input input {
+            flex: 1;
+            border: none;
+            outline: none;
+            padding: 10px;
+            border-radius: 20px;
+            background-color: white;
+            border: 1px solid #e0e0e0;
+        }
+       
+        .chatbot-input button {
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-left: 10px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+       
+        .chatbot-input button:hover {
+            background-color: #3e8e41;
+        }
+       
+        /* Mobile Responsive Styles */
+        @media (max-width: 480px) {
+            .chatbot-interface {
+                width: 100%;
+                height: 100%;
+                bottom: 0;
+                right: 0;
+                border-radius: 0;
+            }
+           
+            .chatbot-button {
+                bottom: 20px;
+                right: 20px;
+            }
+        }
+        /* Add these styles to change chatbot text colors to black */
+
+/* For user messages */
+.user-message {
+    background-color: #DCF8C6;
+    align-self: flex-end;
+    border-bottom-right-radius: 5px;
+    color: black; /* Explicitly set text color to black */
+}
+
+/* For bot messages */
+.bot-message {
+    background-color: #f1f1f1;
+    align-self: flex-start;
+    border-bottom-left-radius: 5px;
+    color: black; /* Explicitly set text color to black */
+}
+
+/* For quick reply buttons */
+.quick-reply {
+    background-color: #e9f5ff;
+    color: black; /* Change from blue to black */
+    border: 1px solid #0078D7;
+}
+
+/* Input text color */
+.chatbot-input input {
+    color: black;
+}
+
+.profile-section {
+    display: none;
+    position: relative;
+    padding: 10px 20px;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+    margin-left: 15px;
+}
+
+.profile-section.active {
+    display: flex;
+    align-items: center;
+    background: rgba(12, 40, 5, 0.668);
+    border: 1px solid rgba(0, 255, 0, 0.2);
+}
+
+.profile-section:hover {
+    background: rgba(0, 255, 0, 0.25);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 255, 0, 0.2);
+}
+
+.profile-dropdown {
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
+    right: 0;
+    top: 130%;
+    background: rgba(0, 0, 0, 0.95);
+    padding: 20px;
+    border-radius: 15px;
+    min-width: 250px;
+    z-index: 1000;
+    box-shadow: 0 8px 32px rgba(0, 255, 0, 0.2);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 255, 0, 0.1);
+    transform: translateY(10px);
+    transition: all 0.3s ease, visibility 0.3s ease;
+    pointer-events: none;
+}
+
+.profile-section:hover .profile-dropdown {
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+/* Add padding to create a hoverable area between profile and dropdown */
+.profile-dropdown::after {
+    content: '';
+    position: absolute;
+    top: -20px;
+    left: 0;
+    right: 0;
+    height: 20px;
+}
+
+.profile-dropdown::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    right: 25px;
+    width: 15px;
+    height: 15px;
+    background: rgba(0, 0, 0, 0.95);
+    transform: rotate(45deg);
+    border-left: 1px solid rgba(0, 255, 0, 0.1);
+    border-top: 1px solid rgba(0, 255, 0, 0.1);
+}
+
+.profile-dropdown a {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    color: #fff;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border-radius: 10px;
+    margin-bottom: 5px;
+    font-size: 1rem;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+}
+
+.profile-dropdown a i {
+    margin-right: 12px;
+    color: #0f0;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    min-width: 20px;
+    text-align: center;
+}
+
+.profile-dropdown a:hover {
+    background-color: rgba(0, 255, 0, 0.15);
+    transform: translateX(5px);
+    padding-left: 20px;
+}
+
+.profile-dropdown a:hover i {
+    transform: scale(1.1);
+}
+
+/* Add hover area above dropdown */
+.profile-section::after {
+    content: '';
+    position: absolute;
+    bottom: -20px;
+    left: 0;
+    right: 0;
+    height: 20px;
+}
+
+.profile-name {
+    color: rgb(255, 255, 255);
+    text-decoration: none;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    font-size: 1.1rem;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+
+.profile-name i {
+    margin-left: 8px;
+    transition: transform 0.3s ease;
+    font-size: 1.1rem;
+}
+
+.profile-section:hover .profile-name i {
+    transform: rotate(180deg);
+}
+
+.profile-name:hover {
+    color: #0f0;
+    text-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+}
+
+.profile-dropdown .menu-divider {
+    height: 1px;
+    background: rgba(0, 255, 0, 0.1);
+    margin: 10px 0;
+}
+
+.profile-dropdown .sign-out {
+    color: #ff4444;
+    border-top: 1px solid rgba(255, 68, 68, 0.1);
+    margin-top: 5px;
+}
+
+.profile-dropdown .sign-out:hover {
+    background-color: rgba(255, 68, 68, 0.1);
+}
+.auth-hidden {
+    display: none !important;
+}
+
+/* Modify the existing auth-btn class to handle initial state */
+.auth-btn {
+    padding: 10px 20px;
+    background-color: #ffffff;
+    color: #010d1c;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: block;
+    font-weight: bold;
+}
+
+.auth-btn:hover {
+    background-color: #dacdb5ce;
+    transform: translateY(-2px) scale(1.1);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.profile-section {
+    display: none;  /* Hide by default until auth state is confirmed */
+}
+
+.profile-section.active {
+    display: block;
+}
+    </style>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDtOWJd8duOmOctCfEQQESRY817v5dRH1k",
+            authDomain: "navnirmanai-1a761.firebaseapp.com",
+            projectId: "navnirmanai-1a761",
+            storageBucket: "navnirmanai-1a761.firebasestorage.app",
+            messagingSenderId: "569693452065",
+            appId: "1:569693452065:web:01f06b54409835539bb060"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+
+        // Auth state observer
+        auth.onAuthStateChanged((user) => {
+            const signInBtn = document.querySelector('.auth-btn');
+            const profileSection = document.querySelector('.profile-section');
+            
+            if (user) {
+                // User is signed in
+                signInBtn.style.display = 'none'; // Hide sign in button
+                profileSection.classList.add('active');
+                
+                // Update profile name
+                const profileName = document.querySelector('.profile-name');
+                profileName.textContent = user.displayName || user.email;
+            } else {
+                // User is signed out
+                signInBtn.style.display = 'block'; // Show sign in button
+                profileSection.classList.remove('active');
+            }
+        });
+
+        // Sign out function
+        function signOut() {
+            auth.signOut().then(() => {
+                window.location.href = 'index.html';
+            }).catch((error) => {
+                console.error('Error signing out:', error);
+            });
+        }
+
+        // Check if user is authenticated for protected pages
+        function checkAuth() {
+            const protectedPages = ['profile.html', 'rewards.html', 'pickup.html'];
+            const currentPage = window.location.pathname.split('/').pop();
+            
+            if (protectedPages.includes(currentPage)) {
+                auth.onAuthStateChanged((user) => {
+                    if (!user) {
+                        window.location.href = 'signin.html';
+                    }
+                });
+            }
+        }
+
+        // Run auth check when page loads
+        document.addEventListener('DOMContentLoaded', checkAuth);
+    </script>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="pic1.png" alt="navnirman.ai Logo">
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="services.html">Services</a></li>
+                <li><a href="events.html">Book an Event</a></li>
+                <li><a href="signin.html" class="auth-btn">Sign In / Up</a></li>
+                <li class="profile-section">
+                    <a href="#" class="profile-name">
+                        Profile
+                        <i class="bi bi-chevron-down"></i>
+                    </a>
+                    <div class="profile-dropdown">
+                        <a href="profile.html">
+                            <i class="bi bi-person-circle"></i>
+                            My Profile
+                        </a>
+                        <div class="menu-divider"></div>
+                        <a href="support.html">
+                            <i class="bi bi-headset"></i>
+                            Customer Support
+                        </a>
+                        <a href="settings.html">
+                            <i class="bi bi-gear"></i>
+                            Settings
+                        </a>
+                        <div class="menu-divider"></div>
+                        <a href="#" class="sign-out" onclick="signOut()">
+                            <i class="bi bi-box-arrow-right"></i>
+                            Sign Out
+                        </a>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </header>
+   
+    <!-- Hero Section with Carousel -->
+    <section class="hero-section">
+        <!-- Carousel - Added carousel-fade class to prevent slide overlap -->
+        <div id="carouselExample" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="5000">
+            <div class="carousel-inner">
+                <!-- Slide 1 -->
+                <div class="carousel-item active" style="background-image: url('https://newindianetwork.com/wp-content/uploads/2023/09/e-waste-banner.jpg')">
+                    <div class="carousel-content">
+                        <h3>"Turn Your Old Electronics into a Greener Future!"</h3>
+                        <p>Find nearby recycling centers and schedule pickups—all with a simple click.</p>
+                        <a href="pickup.html" class="carousel-btn">Start Recycling Now</a>
+                    </div>
+                </div>
+                <!-- Slide 2 -->
+                <div class="carousel-item" style="background-image: url('https://csiship.mystagingwebsite.com/wp-content/uploads/2020/06/Untitled-2.png')">
+                    <div class="carousel-content">
+                        <h3>"No Need to Travel—We'll Collect Your E-Waste!"</h3>
+                        <p>Schedule a home pickup for bulky items like old TVs, refrigerators, and more.</p>
+                        <a href="pickup.html" class="carousel-btn">Book a Pickup</a>
+                    </div>
+                </div>
+                <!-- Slide 3 -->
+                <div class="carousel-item" style="background-image: url('https://images.unsplash.com/photo-1504384764586-bb4cdc1707b0?ixlib=rb-4.0.3')">
+                    <div class="carousel-content">
+                        <h3>"Want to conduct E-Waste related events?"</h3>
+                        <p>Let us know and we'll help you organize it. Or join our events and make a difference!</p>
+                        <a href="events.html" class="carousel-btn">Book Now</a>
+                    </div>
+                </div>
+                <!-- Slide 4 -->
+                <div class="carousel-item" style="background-image: url('https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?ixlib=rb-4.0.3')">
+                    <div class="carousel-content">
+                        <h3>"Make a Difference & Get Rewarded!"</h3>
+                        <p>Every time you recycle, you're helping the environment and earning rewards like points, discounts, and more!</p>
+                        <a href="rewards.html" class="carousel-btn">Recycle and Earn</a>
+                    </div>
+                </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+    </section>
+   
+    <!-- Section Divider -->
+    <div class="section-divider"></div>
+   
+    <!-- How It Works Section -->
+    <section class="how-it-works">
+        <div class="container">
+            <div class="section-title-container">
+                <h2 class="section-title">How It Works</h2>
+                <p class="section-subtitle">Our simple 4-step process makes recycling your e-waste effortless and rewarding</p>
+            </div>
+           
+            <div class="row g-4">
+                <!-- Step 1 -->
+                <div class="col-md-3">
+                    <div class="process-step">
+                        <div class="step-number">1</div>
+                        <i class="bi bi-calendar-check process-icon"></i>
+                        <h4>Schedule</h4>
+                        <p>Book a pickup or find a nearby drop-off location using our app or website</p>
+                        <!-- Connector between steps -->
+                        <div class="process-connector d-none d-md-block"></div>
+                    </div>
+                </div>
+               
+                <!-- Step 2 -->
+                <div class="col-md-3">
+                    <div class="process-step">
+                        <div class="step-number">2</div>
+                        <i class="bi bi-truck process-icon"></i>
+                        <h4>Collection</h4>
+                        <p>We'll collect your e-waste from your home or meet you at a convenient drop-off point</p>
+                        <div class="process-connector d-none d-md-block"></div>
+                    </div>
+                </div>
+               
+                <!-- Step 3 -->
+                <div class="col-md-3">
+                    <div class="process-step">
+                        <div class="step-number">3</div>
+                        <i class="bi bi-recycle process-icon"></i>
+                        <h4>Recycling</h4>
+                        <p>Your e-waste is properly sorted, data-wiped, and recycled at certified facilities</p>
+                        <div class="process-connector d-none d-md-block"></div>
+                    </div>
+                </div>
+               
+                <!-- Step 4 -->
+                <div class="col-md-3">
+                    <div class="process-step">
+                        <div class="step-number">4</div>
+                        <i class="bi bi-award process-icon"></i>
+                        <h4>Rewards</h4>
+                        <p>Earn points for each item recycled that can be redeemed for discounts and eco-friendly products</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+   
+    <!-- Section Divider -->
+    <div class="section-divider"></div>
+   
+    <!-- Customer Reviews Section -->
+    <section class="reviews-section">
+        <div class="reviews-bg"></div>
+        <div class="container py-4">
+            <div class="section-title-container">
+                <h2 class="section-title">What Our Customers Say</h2>
+                <p class="section-subtitle">Real experiences from people who've used our e-waste management services</p>
+            </div>
+           
+            <div class="row">
+                <!-- Review Card 1 -->
+                <div class="col-md-4 mb-4">
+                    <div class="review-card">
+                        <div class="review-header">
+                            <div class="reviewer-img">
+                                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Reviewer">
+                            </div>
+                            <div class="reviewer-info">
+                                <h5>Rajesh Sharma</h5>
+                                <div class="stars">
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="review-text">The home pickup service was incredibly convenient. I had several old computers and monitors taking up space in my garage. The team arrived on time, was professional, and even helped me carry the heavier items. Highly recommend!</p>
+                        <div class="review-date">March 12, 2025</div>
+                    </div>
+                </div>
+               
+                <!-- Review Card 2 -->
+                <div class="col-md-4 mb-4">
+                    <div class="review-card">
+                        <div class="review-header">
+                            <div class="reviewer-img">
+                                <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Reviewer">
+                            </div>
+                            <div class="reviewer-info">
+                                <h5>Priya Patel</h5>
+                                <div class="stars">
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-half"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="review-text">I used the AI chatbot to find the nearest recycling center for my old smartphone and it gave me precise directions. The rewards system is a nice bonus - I've already earned enough points for a discount on my next recycling service!</p>
+                        <div class="review-date">February 28, 2025</div>
+                    </div>
+                </div>
+               
+                <!-- Review Card 3 -->
+                <div class="col-md-4 mb-4">
+                    <div class="review-card">
+                        <div class="review-header">
+                            <div class="reviewer-img">
+                                <img src="https://randomuser.me/api/portraits/men/67.jpg" alt="Reviewer">
+                            </div>
+                            <div class="reviewer-info">
+                                <h5>Vikram Singh</h5>
+                                <div class="stars">
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="review-text">"As a small business owner, proper e-waste disposal was becoming a compliance headache. navnirman.ai made it effortless with their bulk collection service. Their documentation for regulatory purposes was comprehensive and saved me a lot of time."</p>
+                        <div class="review-date">March 5, 2025</div>
+                    </div>
+                </div>
+            </div>
+           
+            <div class="row mt-3">
+           
+            <!-- Add review button -->
+            <div class="row text-center mt-4">
+                <div class="col-12">
+                    <a href="add-review.html" class="reviews-btn">Share Your Experience</a>
+                </div>
+            </div>
+        </div>
+    </section>
+   
+    <!-- Enhanced Footer -->
+    <footer>
+        <div class="footer-column">
+            <h3>Company</h3>
+            <ul>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="services.html">Our Services</a></li>
+                <li><a href="#">Privacy Policy</a></li>
+            </ul>
+        </div>
+        <div class="footer-column">
+            <h3>Get Help</h3>
+            <ul>
+                <li><a href="#">FAQ</a></li>
+                <li><a href="#">Status</a></li>
+                <li><a href="#">Payment Options</a></li>
+            </ul>
+        </div>
+        <div class="footer-column">
+            <h3>Contact us</h3>
+            <ul>
+                <li><a href="#">navnirman.ai@gmail.com</a></li>
+                <li><a href="#">9967960193</a></li>
+            </ul>
+        </div>
+    </footer>
+   
+    <!-- Floating Chatbot Container -->
+    <div class="chatbot-container">
+        <!-- Chatbot Toggle Button -->
+        <div class="chatbot-button" id="chatbot-button">
+            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0id2hpdGUiIHdpZHRoPSIyNHB4IiBoZWlnaHQ9IjI0cHgiPjxwYXRoIGQ9Ik0yMCA0aC0zLjJjLS40LTEuMS0xLjUtMi0yLjgtMi0xLjMgMC0yLjQuOS0yLjggMkgzYy0xLjEgMC0yIC45LTIgMnYxMmMwIDEuMS45IDIgMiAyaDE3YzEuMSAwIDItLjkgMi0yVjZjMC0xLjEtLjktMi0yLTJ6bS01LjQgMGMuMS0uNS42LTEgMS40LTEgLjggMCAxLjIuNSAxLjQgMXYxaC0yLjhWNHptNC40IDE0SDV2LTJoMTR2MnptMC00SDVWNmgxMS4ybDEuMSAySDIwdjZ6Ii8+PC9zdmc+" alt="Chat Icon">
+        </div>
+       
+        <!-- Chatbot Interface -->
+        <div class="chatbot-interface" id="chatbot-interface">
+            <!-- Chatbot Header -->
+            <div class="chatbot-header">
+                <div class="chatbot-title">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0id2hpdGUiIHdpZHRoPSIyNHB4IiBoZWlnaHQ9IjI0cHgiPjxwYXRoIGQ9Ik0xMiAxQzUuOSAxIDEgNS45IDEgMTJzNC45IDExIDExIDExIDExLTQuOSAxMS0xMVMxOC4xIDEgMTIgMXptMCAyMGMtNC45IDAtOS00LjEtOS05czQuMS05IDktOSA5IDQuMSA5IDktNC4xIDktOSA5eiIvPjxwYXRoIGQ9Ik0xMiA3Yy0uOCAwLTEuNS43LTEuNSAxLjVTMTEuMiAxMCAxMiAxMHMxLjUtLjcgMS41LTEuNVMxMi44IDcgMTIgN3ptLTMuNiA2LjVjLS4xLS41LS42LS44LTEuMS0uN2MtLjUuMS0uOC42LS43IDEuMUM3LjEgMTYuOSA5LjQgMTkgMTIgMTlzNC45LTIuMSA1LjQtNS4xYy4xLS41LS4yLTEtLjctMS4xLS41LS4xLTEgLjItMS4xLjdDMTUuMiAxNS43IDEzLjcgMTcgMTIgMTdzLTMuMi0xLjMtMy42LTMuNXoiLz48L3N2Zz4=" alt="Navie">
+                    <h3>Navie</h3>
+                </div>
+                <div class="chatbot-close" id="chatbot-close">×</div>
+            </div>
+           
+            <!-- Chatbot Messages Area -->
+            <div class="chatbot-messages" id="chatbot-messages">
+                <!-- Bot's welcome message will be added here by JavaScript -->
+               
+                <!-- Typing indicator -->
+                <div class="typing-indicator" id="typing-indicator">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+           
+            <!-- Chatbot Input Area -->
+            <div class="chatbot-input">
+                <input type="text" id="user-input" placeholder="Type your message here..." aria-label="Type your message">
+                <button id="send-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Move Bootstrap JS to end of body -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Fix script tag formatting -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const chatbotButton = document.getElementById('chatbot-button');
+            const chatbotInterface = document.getElementById('chatbot-interface');
+            const chatbotClose = document.getElementById('chatbot-close');
+            const chatbotMessages = document.getElementById('chatbot-messages');
+            const userInput = document.getElementById('user-input');
+            const sendButton = document.getElementById('send-button');
+            const typingIndicator = document.getElementById('typing-indicator');
+            
+            // Knowledge Base for E-Waste FAQs
+            const knowledgeBase = {
+                // General E-Waste Information
+                "what is e-waste": "E-waste refers to electronic waste - discarded electrical or electronic devices. This includes used electronics that are destined for reuse, resale, salvage, recycling, or disposal.",
+                "why is e-waste recycling important": "E-waste recycling is crucial because electronic devices contain toxic substances like lead, mercury, and cadmium that can harm the environment and human health. Proper recycling also recovers valuable materials like gold, silver, copper, and rare earth elements, reducing the need for mining raw materials.",
+               
+                // Price Estimation
+                "price estimation": "I can help estimate the value of your e-waste. Typical price ranges depend on the type and condition of your electronic devices. For example, working laptops can fetch ₹1,000-5,000, smartphones ₹200-2,000, and desktop computers ₹800-3,000. Please provide details of what you have for a more accurate estimate.",
+                "how much for laptop": "Laptop pricing typically ranges from ₹1,000-5,000 depending on age, specifications, and condition. A working laptop less than 5 years old could fetch ₹2,000-4,000, while older or non-working laptops may be valued at ₹500-1,500 for parts recycling.",
+                "how much for phone": "Smartphone values range from ₹200-2,000 based on model, age and condition. Recent models (1-3 years old) in working condition could be worth ₹800-2,000, while older or damaged phones might fetch ₹200-600 for recycling.",
+                "how much for desktop": "Desktop computers typically bring ₹800-3,000 depending on age, specifications, and condition. Working systems under 5 years old could be worth ₹1,500-3,000, while older systems might fetch ₹500-1,500.",
+                "how much for tv": "TV recycling values vary significantly by type. CRT TVs have minimal value (₹200-500) due to recycling costs, while flat screens can be worth ₹500-2,000 depending on size, age, and functionality.",
+               
+                // Collection Process
+                "collection process": "Our collection process is simple: 1) Schedule a pickup via our website or by calling us, 2) Our team will arrive at your location at the scheduled time, 3) We'll weigh and evaluate your e-waste on the spot, 4) You'll receive payment immediately based on current rates.",
+                "pickup service": "Yes, we offer free pickup service for e-waste within city limits. For larger quantities (over 10kg), we offer pickup in surrounding areas as well. You can schedule a pickup through our website or by calling our customer service.",
+               
+                // Environmental Impact
+                "environmental benefits": "Proper e-waste recycling prevents toxic materials from entering landfills and water sources, reducing pollution. It also conserves natural resources by recovering valuable metals and materials, reducing the need for mining. Additionally, it saves energy - recycling aluminum uses 95% less energy than producing it from raw materials.",
+               
+                // Laws and Regulations
+                "e-waste laws": "In India, e-waste management is regulated under the E-Waste Management Rules, 2016 (amended in 2018). These rules implement the Extended Producer Responsibility (EPR) concept, making manufacturers responsible for collecting and properly disposing of end-of-life products.",
+               
+                // Website specific information
+                "how to schedule": "You can schedule a pickup through our website by clicking on the 'Book a Pickup' button in the carousel or heading to the Services page. Alternatively, you can call us at the number in the footer.",
+                "rewards": "Our rewards program gives you points for each item recycled. These points can be redeemed for discounts on future services or exchanged for eco-friendly products in our rewards catalog. Check the 'Recycle and Earn' section for more details.",
+                "events": "We regularly organize e-waste collection drives and awareness workshops. You can find information about upcoming events or book an event for your organization by clicking on the 'Book an Event' link in the navigation menu."
+            };
+           
+            // Initial Quick Reply options
+            const initialQuickReplies = [
+                "What is e-waste?",
+                "Price estimation",
+                "Collection process",
+                "Environmental benefits"
+            ];
+           
+            // Price estimation options
+            const priceEstimationOptions = [
+                "Laptop",
+                "Smartphone",
+                "Desktop",
+                "TV/Monitor"
+            ];
+           
+            // Helper function to create a message element
+            function createMessage(text, sender) {
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('message');
+                messageDiv.classList.add(sender === 'bot' ? 'bot-message' : 'user-message');
+                messageDiv.textContent = text;
+                return messageDiv;
+            }
+           
+            // Helper function to create quick reply buttons
+            function createQuickReplies(options) {
+                const quickRepliesDiv = document.createElement('div');
+                quickRepliesDiv.classList.add('quick-replies');
+               
+                options.forEach(option => {
+                    const button = document.createElement('div');
+                    button.classList.add('quick-reply');
+                    button.textContent = option;
+                    button.addEventListener('click', function() {
+                        sendMessage(option);
+                    });
+                    quickRepliesDiv.appendChild(button);
+                });
+               
+                return quickRepliesDiv;
+            }
+           
+            // Function to show the typing indicator
+            function showTypingIndicator() {
+                typingIndicator.style.display = 'block';
+                chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+            }
+           
+            // Function to hide the typing indicator
+            function hideTypingIndicator() {
+                typingIndicator.style.display = 'none';
+            }
+           
+            // Simplified function to generate responses without external API
+            // Since the Gemini API call had issues, we'll use our knowledge base more comprehensively
+            function generateAIResponse(userMessage) {
+                // Convert to lowercase for matching
+                const lowerUserMessage = userMessage.toLowerCase();
+                
+                // First try exact matches from knowledge base
+                for (const [keyword, response] of Object.entries(knowledgeBase)) {
+                    if (lowerUserMessage.includes(keyword)) {
+                        return response;
+                    }
+                }
+                
+                // Handle common greetings
+                if (lowerUserMessage.match(/\b(hi|hello|hey|greetings)\b/)) {
+                    return "Hello! How can I help you with e-waste recycling today? Feel free to ask about our services or prices.";
+                }
+                
+                // Handle thanks
+                if (lowerUserMessage.match(/\b(thanks|thank you|thank)\b/)) {
+                    return "You're welcome! I'm happy to help. Is there anything else you'd like to know about e-waste recycling?";
+                }
+                
+                // Handle goodbyes
+                if (lowerUserMessage.match(/\b(bye|goodbye|see you|farewell)\b/)) {
+                    return "Goodbye! Feel free to chat again if you have more questions about e-waste recycling.";
+                }
+                
+                // Handle common e-waste related questions not covered in knowledge base
+                if (lowerUserMessage.includes("battery") || lowerUserMessage.includes("batteries")) {
+                    return "We accept all types of batteries for recycling, including lithium-ion, alkaline, and lead-acid batteries. These contain hazardous materials and should never be thrown in regular trash.";
+                }
+                
+                if (lowerUserMessage.includes("location") || lowerUserMessage.includes("center") || lowerUserMessage.includes("drop off")) {
+                    return "We have several drop-off locations across the city. You can find the nearest one by entering your pincode on our Services page, or we can arrange a pickup from your location!";
+                }
+                
+                // Fallback response
+                return "I'm not sure I understand that completely. Would you like to know about our e-waste recycling services, price estimates, or how our collection process works?";
+            }
+           
+            // Function to process user message and get bot response
+            async function botRespond(userMessage) {
+                showTypingIndicator();
+                
+                try {
+                    const response = await fetch('your-server-url/chat', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ message: userMessage })
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error('Server response was not ok');
+                    }
+                    
+                    const data = await response.json();
+                    const botResponse = data.response;
+                    
+                    // Rest of your existing display logic...
+                    hideTypingIndicator();
+                    chatbotMessages.appendChild(createMessage(botResponse, 'bot'));
+                    chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+                    
+                } catch (error) {
+                    console.error('Error:', error);
+                    hideTypingIndicator();
+                    chatbotMessages.appendChild(createMessage("Sorry, I'm having trouble connecting to the server. Please try again later.", 'bot'));
+                }
+            }
+           
+            // Function to send a user message
+            function sendMessage(message) {
+                // If no message or empty, don't proceed
+                if (!message || message.trim() === '') return;
+               
+                // Clear the input field if the message comes from there
+                if (message === userInput.value) {
+                    userInput.value = '';
+                }
+               
+                // Add user message to chat
+                chatbotMessages.appendChild(createMessage(message, 'user'));
+               
+                // Scroll to bottom
+                chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+               
+                // Process response
+                botRespond(message);
+            }
+           
+            // Event Listeners
+            chatbotButton.addEventListener('click', function() {
+                chatbotInterface.classList.add('active');
+                // If this is the first opening, show welcome message
+                if (chatbotMessages.childElementCount <= 1) { // Only typing indicator exists
+                    setTimeout(() => {
+                        const welcomeMessage = "👋 Hi there! I'm Navie, your e-waste recycling assistant. I can help with price estimates for your old electronics and answer questions about our collection process. How can I help you today?";
+                        chatbotMessages.appendChild(createMessage(welcomeMessage, 'bot'));
+                        chatbotMessages.appendChild(createQuickReplies(initialQuickReplies));
+                    }, 500);
+                }
+            });
+           
+            chatbotClose.addEventListener('click', function() {
+                chatbotInterface.classList.remove('active');
+            });
+           
+            sendButton.addEventListener('click', function() {
+                sendMessage(userInput.value);
+            });
+           
+            userInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage(userInput.value);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
