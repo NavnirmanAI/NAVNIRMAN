@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>E-Waste Pickup</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <!-- Add Bootstrap Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css"
+    />
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+    <script defer src="../javascript/newpickup.js"></script>
+    <script defer src="../javascript/cart.js"></script>
+    <script defer src="../javascript/pickup-scheduler.js"></script>
+    <script defer src="../javascript/order-status.js"></script>
+    <link rel="stylesheet" href="../stylesheet/style3.css" />
+    <link rel="stylesheet" href="../javascript/cart.css" />
+    <style>
+      /* Profile Section Styles */
+      .profile-section {
+        display: none;
+        position: relative;
+        padding: 15px 25px;
+        border-radius: 22px;
+        transition: all 0.3s ease;
+        margin-left: 15px;
+        background: #1b5e20;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2),
+          0 2px 4px rgba(0, 0, 0, 0.2);
+      }
+
+      .profile-section.active {
+        display: flex;
+        align-items: center;
+        border: none;
+      }
+
+      .profile-section:hover {
+        background: #154a19;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1),
+          0 2px 6px rgba(0, 0, 0, 0.3);
+      }
+
+      .profile-dropdown {
+        visibility: hidden;
+        opacity: 0;
+        position: absolute;
+        right: 0;
+        top: 130%;
+        background: rgba(0, 0, 0, 0.95);
+        padding: 20px;
+        border-radius: 15px;
+        min-width: 250px;
+        z-index: 1000;
+        box-shadow: 0 8px 32px rgba(0, 255, 0, 0.2);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(0, 255, 0, 0.1);
+        transform: translateY(10px);
+        transition: all 0.3s ease, visibility 0.3s ease;
+        pointer-events: none;
+      }
+
+      /* Add padding to create hoverable area */
+      .profile-dropdown::after {
+        content: "";
+        position: absolute;
+        top: -20px;
+        left: 0;
+        right: 0;
+        height: 20px;
+      }
+
+      /* Add the dropdown arrow */
+      .profile-dropdown::before {
+        content: "";
+        position: absolute;
+        top: -8px;
+        right: 25px;
+        width: 15px;
+        height: 15px;
+        background: rgba(0, 0, 0, 0.95);
+        transform: rotate(45deg);
+        border-left: 1px solid rgba(0, 255, 0, 0.1);
+        border-top: 1px solid rgba(0, 255, 0, 0.1);
+      }
+
+      /* Make dropdown stay visible when hovering the dropdown itself */
+      .profile-section:hover .profile-dropdown,
+      .profile-dropdown:hover {
+        visibility: visible;
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+        transition-delay: 0s;
+      }
+
+      /* Add hover intent - small delay before hiding */
+      .profile-section:not(:hover) .profile-dropdown:not(:hover) {
+        visibility: hidden;
+        opacity: 0;
+        transform: translateY(10px);
+        transition-delay: 0.3s;
+      }
+
+      .profile-dropdown a {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        color: #fff;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border-radius: 10px;
+        margin-bottom: 5px;
+        font-size: 1rem;
+        letter-spacing: 0.3px;
+        white-space: nowrap;
+      }
+
+      .profile-dropdown a i {
+        margin-right: 12px;
+        color: #a8d641;
+        font-size: 1.2rem;
+        transition: all 0.3s ease;
+        min-width: 20px;
+        text-align: center;
+      }
+
+      .profile-dropdown a:hover {
+        background-color: rgba(168, 214, 65, 0.15);
+        transform: translateX(5px);
+        padding-left: 20px;
+      }
+
+      .profile-dropdown a:hover i {
+        transform: scale(1.1);
+      }
+
+      .profile-name {
+        color: rgb(255, 255, 255);
+        text-decoration: none;
+        font-weight: 400;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        font-size: 1.05rem;
+        letter-spacing: 0.3px;
+        white-space: nowrap;
+        text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+      }
+
+      .profile-name i {
+        margin-left: 8px;
+        transition: transform 0.3s ease;
+        font-size: 1rem;
+        opacity: 0.9;
+      }
+
+      .profile-section:hover .profile-name i {
+        transform: rotate(180deg);
+      }
+
+      .profile-dropdown .menu-divider {
+        height: 1px;
+        background: rgba(168, 214, 65, 0.1);
+        margin: 10px 0;
+      }
+
+      .profile-dropdown .sign-out {
+        color: #ff4444;
+        border-top: 1px solid rgba(255, 68, 68, 0.1);
+        margin-top: 5px;
+      }
+
+      .profile-dropdown .sign-out:hover {
+        background-color: rgba(255, 68, 68, 0.1);
+      }
+
+      .auth-hidden {
+        display: none !important;
+      }
+
+      /* Add padding below profile section to create hoverable area */
+      .profile-section::after {
+        content: "";
+        position: absolute;
+        bottom: -20px;
+        left: 0;
+        right: 0;
+        height: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="main-nav">
+      <div class="main-nav-left">
+        <a href="index.html" class="home-btn">HOME</a>
+        <div class="categories-dropdown">
+          <button class="categories-btn">
+            Categories <i class="fas fa-chevron-down"></i>
+          </button>
+          <div class="dropdown-content">
+            <a href="#" data-category="all">All Products</a>
+            <a href="#" data-category="mobile">Mobile Phones</a>
+            <a href="#" data-category="computers">Computers & Laptops</a>
+            <a href="#" data-category="tablets">Tablets & iPads</a>
+            <a href="#" data-category="printers">Printers</a>
+            <a href="#" data-category="tvs">Television & Monitors</a>
+            <a href="#" data-category="accessories">Accessories</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="search-container">
+        <input
+          type="text"
+          id="search-input"
+          placeholder="Search for electronics to recycle..."
+          aria-label="Search products"
+        />
+        <button type="submit" aria-label="Search">
+          <i class="fas fa-search"></i>
+        </button>
+      </div>
+
+      <div class="main-nav-right">
+        <div
+          class="nav-item"
+          id="rewards-btn"
+          title="Preparing Exciting Rewards for you"
+        >
+          <i class="fas fa-coins"></i>
+          <span>Rewards</span>
+        </div>
+
+        <div class="nav-item cart-container">
+          <button id="cart-btn" class="cart-btn">
+            <i class="fas fa-shopping-cart"></i>
+            <span>Cart</span>
+            <span id="cart-count" class="cart-count">0</span>
+          </button>
+        </div>
+
+        <div class="nav-item">
+          <a href="signin.html" class="auth-btn">
+            <span style="color: #000000">Sign In / Up</span>
+          </a>
+        </div>
+
+        <div class="nav-item profile-section">
+          <a href="#" class="profile-name">
+            Profile
+            <i class="bi bi-chevron-down"></i>
+          </a>
+          <div class="profile-dropdown">
+            <a href="profile.html">
+              <i class="bi bi-person-circle"></i>
+              My Profile
+            </a>
+            <div class="menu-divider"></div>
+            <a href="support.html">
+              <i class="bi bi-headset"></i>
+              Customer Support
+            </a>
+            <a href="settings.html">
+              <i class="bi bi-gear"></i>
+              Settings
+            </a>
+            <div class="menu-divider"></div>
+            <a href="#" class="sign-out" onclick="signOut()">
+              <i class="bi bi-box-arrow-right"></i>
+              Sign Out
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="productModal" class="modal">
+      <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <div class="product-form">
+          <h2 id="modalProductTitle">Name of the product chosen</h2>
+          <form id="productDetailsForm">
+            <div class="form-group">
+              <label for="brand">Brand:</label>
+              <input type="text" id="brand" name="brand" required />
+            </div>
+
+            <div class="form-group">
+              <label for="modelNo">Model No.:</label>
+              <input type="text" id="modelNo" name="modelNo" required />
+            </div>
+
+            <div class="form-group">
+              <label for="yearBought">Year Bought:</label>
+              <input
+                type="number"
+                id="yearBought"
+                name="yearBought"
+                min="1990"
+                max="2024"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="condition">Condition:</label>
+              <select id="condition" name="condition" required>
+                <option value="">Select condition</option>
+                <option value="working">Working</option>
+                <option value="notworking">Not Working</option>
+                <option value="damaged">Damaged</option>
+              </select>
+            </div>
+
+            <button type="submit" class="modal-add-to-cart">ADD TO CART</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cart Modal -->
+    <div id="cartModal" class="modal">
+      <div class="cart-modal-content">
+        <span class="close-cart-modal" onclick="closeCartModal()">&times;</span>
+        <h2>Your Cart</h2>
+        <div id="cartContent">
+          <!-- Cart items will be dynamically inserted here -->
+        </div>
+        <div
+          id="pickupFormContainer"
+          class="pickup-form-container"
+          style="display: none"
+        >
+          <h3>Schedule Pickup</h3>
+          <form id="pickupForm">
+            <div class="form-group">
+              <label for="pickupDate">Pickup Date:</label>
+              <input
+                type="date"
+                id="pickupDate"
+                name="pickupDate"
+                required
+                min=""
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="timeSlot">Time Slot:</label>
+              <select id="timeSlot" name="timeSlot" required>
+                <option value="">Select time slot</option>
+                <option value="09:00-11:00">9:00 AM - 11:00 AM</option>
+                <option value="11:00-13:00">11:00 AM - 1:00 PM</option>
+                <option value="14:00-16:00">2:00 PM - 4:00 PM</option>
+                <option value="16:00-18:00">4:00 PM - 6:00 PM</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="address">Pickup Address:</label>
+              <textarea
+                id="address"
+                name="address"
+                required
+                rows="3"
+                placeholder="Enter your complete address"
+              ></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="landmark">Landmark (Optional):</label>
+              <input
+                type="text"
+                id="landmark"
+                name="landmark"
+                placeholder="Near hospital, school, etc."
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="contactNumber">Contact Number:</label>
+              <input
+                type="tel"
+                id="contactNumber"
+                name="contactNumber"
+                required
+                minlength="10"
+                maxlength="10"
+                placeholder="Enter 10-digit mobile number"
+                oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+              />
+              <small class="error-message" id="phoneError"></small>
+            </div>
+
+            <div class="form-actions">
+              <button
+                type="button"
+                class="cancel-btn"
+                onclick="hidePickupForm()"
+              >
+                Cancel
+              </button>
+              <button type="submit" class="confirm-pickup-btn">
+                Confirm Pickup
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="products-grid">
+      <!-- Product 1 -->
+      <div class="product-card" data-category="mobile">
+        <div class="product-image">
+          <img src="../images/pic7.webp" alt="Mobiles" />
+        </div>
+        <div class="product-details">
+          <div class="product-title">Mobiles</div>
+          <button
+            class="add-to-cart-btn"
+            data-product="Mobile"
+            data-image="pic7.webp"
+          >
+            ADD TO CART
+          </button>
+        </div>
+      </div>
+
+      <!-- Product 2 -->
+      <div class="product-card" data-category="computers">
+        <div class="product-image">
+          <img src="../images/pic5.jpg" alt="Laptops" />
+        </div>
+        <div class="product-details">
+          <div class="product-title">Laptops</div>
+          <button
+            class="add-to-cart-btn"
+            data-product="Laptop"
+            data-image="pic5.jpg"
+          >
+            ADD TO CART
+          </button>
+        </div>
+      </div>
+
+      <!-- Product 3 -->
+      <div class="product-card" data-category="computers">
+        <div class="product-image">
+          <img src="../images/pic6.jpg" alt="Computers" />
+        </div>
+        <div class="product-details">
+          <div class="product-title">Computers</div>
+          <button
+            class="add-to-cart-btn"
+            data-product="Computers"
+            data-image="pic6.jpg"
+          >
+            ADD TO CART
+          </button>
+        </div>
+      </div>
+
+      <!-- Product 4 -->
+      <div class="product-card" data-category="tablets">
+        <div class="product-image">
+          <img src="../images/pic8.avif" alt="Ipad" />
+        </div>
+        <div class="product-details">
+          <div class="product-title">Ipads/Tablets</div>
+          <button
+            class="add-to-cart-btn"
+            data-product="Ipads/Tablets"
+            data-image="pic8.avif"
+          >
+            ADD TO CART
+          </button>
+        </div>
+      </div>
+
+      <!-- Product 5 -->
+      <div class="product-card" data-category="printers">
+        <div class="product-image">
+          <img src="../images/pic10.jpeg" alt="Printers" />
+        </div>
+        <div class="product-details">
+          <div class="product-title">Printers</div>
+          <button
+            class="add-to-cart-btn"
+            data-product="Printers"
+            data-image="pic10.jpeg"
+          >
+            ADD TO CART
+          </button>
+        </div>
+      </div>
+
+      <!-- Product 6 -->
+      <div class="product-card" data-category="accessories">
+        <div class="product-image">
+          <img src="../images/pic10.webp" alt="Keyboard" />
+        </div>
+        <div class="product-details">
+          <div class="product-title">Keyboard</div>
+          <button
+            class="add-to-cart-btn"
+            data-product="Keyboard"
+            data-image="pic10.webp"
+          >
+            ADD TO CART
+          </button>
+        </div>
+      </div>
+
+      <!-- Product 7 -->
+      <div class="product-card" data-category="tvs">
+        <div class="product-image">
+          <img src="../images/pic11.jpeg" alt="TVs" />
+        </div>
+        <div class="product-details">
+          <div class="product-title">TVs</div>
+          <button
+            class="add-to-cart-btn"
+            data-product="TVs"
+            data-image="pic11.jpeg"
+          >
+            ADD TO CART
+          </button>
+        </div>
+      </div>
+
+      <!-- Product 8 -->
+      <div class="product-card" data-category="accessories">
+        <div class="product-image">
+          <img src="../images/pic12.webp" alt="USB" />
+        </div>
+        <div class="product-details">
+          <div class="product-title">USB</div>
+          <button
+            class="add-to-cart-btn"
+            data-product="USB"
+            data-image="pic12.webp"
+          >
+            ADD TO CART
+          </button>
+        </div>
+      </div>
+
+      <!-- Product 9 -->
+      <div class="product-card" data-category="accessories">
+        <div class="product-image">
+          <img src="../images/Pic13.jpeg" alt="Chargers" />
+        </div>
+        <div class="product-details">
+          <div class="product-title">Chargers</div>
+          <button
+            class="add-to-cart-btn"
+            data-product="Chargers"
+            data-image="pic13.jpeg"
+          >
+            ADD TO CART
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add this before the closing body tag -->
+    <div class="pickup-confirmation" id="pickupConfirmation">
+      <div class="confirmation-content">
+        <div class="confirmation-icon">
+          <svg class="checkmark" viewBox="0 0 52 52">
+            <circle
+              class="checkmark__circle"
+              cx="26"
+              cy="26"
+              r="25"
+              fill="none"
+            />
+            <circle
+              class="checkmark__circle-fill"
+              cx="26"
+              cy="26"
+              r="25"
+              fill="none"
+            />
+            <path class="checkmark__check" d="M16 26l7 7 13-13" fill="none" />
+          </svg>
+        </div>
+        <div class="confirmation-text">Pickup Scheduled Successfully!</div>
+        <div class="confirmation-details">
+          We'll be there to collect your e-waste.
+          <br />
+          Thank you for recycling responsibly!
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyDtOWJd8duOmOctCfEQQESRY817v5dRH1k",
+        authDomain: "navnirmanai-1a761.firebaseapp.com",
+        projectId: "navnirmanai-1a761",
+        storageBucket: "navnirmanai-1a761.firebasestorage.app",
+        messagingSenderId: "569693452065",
+        appId: "1:569693452065:web:01f06b54409835539bb060",
+      };
+
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      const auth = firebase.auth();
+
+      // Wait for DOM to be ready
+      document.addEventListener("DOMContentLoaded", function () {
+        // Get elements
+        const signInBtn = document.querySelector(".auth-btn");
+        const profileSection = document.querySelector(".profile-section");
+
+        // Hide both elements initially
+        signInBtn.classList.add("auth-hidden");
+        profileSection.classList.add("auth-hidden");
+
+        // Auth state observer
+        auth.onAuthStateChanged((user) => {
+          if (user) {
+            // User is signed in
+            signInBtn.classList.add("auth-hidden");
+            profileSection.classList.remove("auth-hidden");
+            profileSection.classList.add("active");
+
+            // Update profile name
+            const profileName = document.querySelector(".profile-name");
+            profileName.textContent = user.displayName || user.email;
+          } else {
+            // User is signed out
+            signInBtn.classList.remove("auth-hidden");
+            profileSection.classList.add("auth-hidden");
+            profileSection.classList.remove("active");
+          }
+        });
+      });
+
+      // Sign out function
+      function signOut() {
+        auth
+          .signOut()
+          .then(() => {
+            window.location.href = "index.html";
+          })
+          .catch((error) => {
+            console.error("Error signing out:", error);
+          });
+      }
+    </script>
+  </body>
+</html>

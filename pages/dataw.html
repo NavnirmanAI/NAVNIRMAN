@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Wiping </title>
+    <link rel="stylesheet" href="../stylesheet/style.css">
+    <style>
+/* Coming Soon Animation Styles */
+.coming-soon-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 60vh;
+    background: #000000;
+    padding: 2rem;
+}
+
+.coming-soon-content {
+    text-align: center;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    width: 100%;
+}
+
+.coming-soon-content h2 {
+    color: #2c3e50;
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    font-weight: 700;
+}
+
+.coming-soon-content p {
+    color: #666;
+    font-size: 1.2rem;
+    margin-top: 2rem;
+}
+
+.animation-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin: 2rem 0;
+}
+
+.circle {
+    width: 20px;
+    height: 20px;
+    background-color: #3498db;
+    border-radius: 50%;
+    animation: bounce 1.4s infinite ease-in-out;
+}
+
+.circle:nth-child(1) {
+    animation-delay: -0.32s;
+}
+
+.circle:nth-child(2) {
+    animation-delay: -0.16s;
+}
+
+@keyframes bounce {
+    0%, 80%, 100% { 
+        transform: scale(0);
+    } 
+    40% { 
+        transform: scale(1.0);
+    }
+}
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <a href="index.html">
+                <img src="../images/pic1.png" alt="navnirman.ai Logo">
+            </a>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="services.html">Services</a></li>
+                <li><a href="events.html">Book an Event</a></li>
+            </ul>
+        </nav>
+    </header>
+        
+        <div class="coming-soon-container">
+            <div class="coming-soon-content">
+                <h2>Coming Soon</h2>
+                <div class="animation-container">
+                    <div class="circle"></div>
+                    <div class="circle"></div>
+                    <div class="circle"></div>
+                </div>
+                <p>We're working hard to bring you the best data wiping solutions.</p>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <div class="footer-column">
+            <h3>Company</h3>
+            <ul>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="services.html">Our Services</a></li>
+                <li><a href="#">Privacy Policy</a></li>
+            </ul>
+        </div>
+        <div class="footer-column">
+            <h3>Get Help</h3>
+            <ul>
+                <li><a href="#">FAQ</a></li>
+                <li><a href="#">Status</a></li>
+                <li><a href="#">Payment Options</a></li>
+            </ul>
+        </div>
+        <div class="footer-column">
+            <h3>Contact us</h3>
+            <ul>
+                <li><a href="#">navnirman.ai@gmail.com</a></li>
+                <li><a href="#">9967960193</a></li>
+            </ul>
+        </div>
+    </footer>
+</body>
+</html>
