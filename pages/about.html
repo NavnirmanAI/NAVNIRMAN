@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>navnirman.ai - Smart E-Waste Management</title>
-    <script defer src="script.js"></script>
     <link rel="stylesheet" href="../stylesheet/style.css" />
     <link
       rel="stylesheet"
@@ -433,18 +432,18 @@
   <body>
     <!-- Rotating Earth Background -->
     <div class="earth-bg">
-      <img src="earth.jpg" alt="earth" />
+      <img src="../images/earth.jpg" alt="earth" />
     </div>
 
     <header>
       <div class="logo">
-        <a href="index.html">
+        <a href="../index.html">
           <img src="../images/pic1.png" alt="navnirman.ai Logo" />
         </a>
       </div>
       <nav>
         <ul>
-          <li><a href="index.html">Home</a></li>
+          <li><a href="../index.html">Home</a></li>
           <li><a href="about.html" class="active">About Us</a></li>
           <li><a href="services.html">Services</a></li>
           <li><a href="events.html">Book an Event</a></li>
@@ -812,7 +811,7 @@
         auth
           .signOut()
           .then(() => {
-            window.location.href = "index.html";
+            window.location.href = "../index.html";
           })
           .catch((error) => {
             console.error("Error signing out:", error);

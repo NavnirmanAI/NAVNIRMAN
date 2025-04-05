@@ -10,7 +10,7 @@
     <!-- Add Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
     <!-- Your custom CSS -->
-    <link rel="stylesheet" href="../stylesheet/style.css">
+    <link rel="stylesheet" href="./stylesheet/style.css">
     
     <!-- Remove Bootstrap JS from here -->
     <style>
@@ -522,31 +522,33 @@
 <body>
     <header>
         <div class="logo">
-            <img src="pic1.png" alt="navnirman.ai Logo">
+            <a href="index.html">
+                <img src="./images/pic1.png" alt="navnirman.ai Logo">
+            </a>
         </div>
         <nav>
             <ul>
                 <li><a href="index.html">Home</a></li>
-                <li><a href="about.html">About Us</a></li>
-                <li><a href="services.html">Services</a></li>
-                <li><a href="events.html">Book an Event</a></li>
-                <li><a href="signin.html" class="auth-btn">Sign In / Up</a></li>
+                <li><a href="./pages/about.html">About Us</a></li>
+                <li><a href="./pages/services.html">Services</a></li>
+                <li><a href="./pages/events.html">Book an Event</a></li>
+                <li><a href="./pages/signin.html" class="auth-btn">Sign In / Up</a></li>
                 <li class="profile-section">
                     <a href="#" class="profile-name">
                         Profile
                         <i class="bi bi-chevron-down"></i>
                     </a>
                     <div class="profile-dropdown">
-                        <a href="profile.html">
+                        <a href="./pages/profile.html">
                             <i class="bi bi-person-circle"></i>
                             My Profile
                         </a>
                         <div class="menu-divider"></div>
-                        <a href="support.html">
+                        <a href="./pages/support.html">
                             <i class="bi bi-headset"></i>
                             Customer Support
                         </a>
-                        <a href="settings.html">
+                        <a href="./pages/settings.html">
                             <i class="bi bi-gear"></i>
                             Settings
                         </a>
@@ -571,7 +573,7 @@
                     <div class="carousel-content">
                         <h3>"Turn Your Old Electronics into a Greener Future!"</h3>
                         <p>Find nearby recycling centers and schedule pickups—all with a simple click.</p>
-                        <a href="pickup.html" class="carousel-btn">Start Recycling Now</a>
+                        <a href="./pages/pickup.html" class="carousel-btn">Start Recycling Now</a>
                     </div>
                 </div>
                 <!-- Slide 2 -->
@@ -579,7 +581,7 @@
                     <div class="carousel-content">
                         <h3>"No Need to Travel—We'll Collect Your E-Waste!"</h3>
                         <p>Schedule a home pickup for bulky items like old TVs, refrigerators, and more.</p>
-                        <a href="pickup.html" class="carousel-btn">Book a Pickup</a>
+                        <a href="./pages/pickup.html" class="carousel-btn">Book a Pickup</a>
                     </div>
                 </div>
                 <!-- Slide 3 -->
@@ -587,7 +589,7 @@
                     <div class="carousel-content">
                         <h3>"Want to conduct E-Waste related events?"</h3>
                         <p>Let us know and we'll help you organize it. Or join our events and make a difference!</p>
-                        <a href="events.html" class="carousel-btn">Book Now</a>
+                        <a href="./pages/events.html" class="carousel-btn">Book Now</a>
                     </div>
                 </div>
                 <!-- Slide 4 -->
@@ -595,7 +597,7 @@
                     <div class="carousel-content">
                         <h3>"Make a Difference & Get Rewarded!"</h3>
                         <p>Every time you recycle, you're helping the environment and earning rewards like points, discounts, and more!</p>
-                        <a href="rewards.html" class="carousel-btn">Recycle and Earn</a>
+                        <a href="#" class="carousel-btn">Recycle and Earn</a>
                     </div>
                 </div>
             </div>
@@ -757,7 +759,7 @@
             <!-- Add review button -->
             <div class="row text-center mt-4">
                 <div class="col-12">
-                    <a href="add-review.html" class="reviews-btn">Share Your Experience</a>
+                    <a href="#" class="reviews-btn">Share Your Experience</a>
                 </div>
             </div>
         </div>
@@ -768,8 +770,8 @@
         <div class="footer-column">
             <h3>Company</h3>
             <ul>
-                <li><a href="about.html">About Us</a></li>
-                <li><a href="services.html">Our Services</a></li>
+                <li><a href="./pages/about.html">About Us</a></li>
+                <li><a href="./pages/services.html">Our Services</a></li>
                 <li><a href="#">Privacy Policy</a></li>
             </ul>
         </div>
@@ -848,36 +850,9 @@
             const sendButton = document.getElementById('send-button');
             const typingIndicator = document.getElementById('typing-indicator');
             
-            // Knowledge Base for E-Waste FAQs
-            const knowledgeBase = {
-                // General E-Waste Information
-                "what is e-waste": "E-waste refers to electronic waste - discarded electrical or electronic devices. This includes used electronics that are destined for reuse, resale, salvage, recycling, or disposal.",
-                "why is e-waste recycling important": "E-waste recycling is crucial because electronic devices contain toxic substances like lead, mercury, and cadmium that can harm the environment and human health. Proper recycling also recovers valuable materials like gold, silver, copper, and rare earth elements, reducing the need for mining raw materials.",
-               
-                // Price Estimation
-                "price estimation": "I can help estimate the value of your e-waste. Typical price ranges depend on the type and condition of your electronic devices. For example, working laptops can fetch ₹1,000-5,000, smartphones ₹200-2,000, and desktop computers ₹800-3,000. Please provide details of what you have for a more accurate estimate.",
-                "how much for laptop": "Laptop pricing typically ranges from ₹1,000-5,000 depending on age, specifications, and condition. A working laptop less than 5 years old could fetch ₹2,000-4,000, while older or non-working laptops may be valued at ₹500-1,500 for parts recycling.",
-                "how much for phone": "Smartphone values range from ₹200-2,000 based on model, age and condition. Recent models (1-3 years old) in working condition could be worth ₹800-2,000, while older or damaged phones might fetch ₹200-600 for recycling.",
-                "how much for desktop": "Desktop computers typically bring ₹800-3,000 depending on age, specifications, and condition. Working systems under 5 years old could be worth ₹1,500-3,000, while older systems might fetch ₹500-1,500.",
-                "how much for tv": "TV recycling values vary significantly by type. CRT TVs have minimal value (₹200-500) due to recycling costs, while flat screens can be worth ₹500-2,000 depending on size, age, and functionality.",
-               
-                // Collection Process
-                "collection process": "Our collection process is simple: 1) Schedule a pickup via our website or by calling us, 2) Our team will arrive at your location at the scheduled time, 3) We'll weigh and evaluate your e-waste on the spot, 4) You'll receive payment immediately based on current rates.",
-                "pickup service": "Yes, we offer free pickup service for e-waste within city limits. For larger quantities (over 10kg), we offer pickup in surrounding areas as well. You can schedule a pickup through our website or by calling our customer service.",
-               
-                // Environmental Impact
-                "environmental benefits": "Proper e-waste recycling prevents toxic materials from entering landfills and water sources, reducing pollution. It also conserves natural resources by recovering valuable metals and materials, reducing the need for mining. Additionally, it saves energy - recycling aluminum uses 95% less energy than producing it from raw materials.",
-               
-                // Laws and Regulations
-                "e-waste laws": "In India, e-waste management is regulated under the E-Waste Management Rules, 2016 (amended in 2018). These rules implement the Extended Producer Responsibility (EPR) concept, making manufacturers responsible for collecting and properly disposing of end-of-life products.",
-               
-                // Website specific information
-                "how to schedule": "You can schedule a pickup through our website by clicking on the 'Book a Pickup' button in the carousel or heading to the Services page. Alternatively, you can call us at the number in the footer.",
-                "rewards": "Our rewards program gives you points for each item recycled. These points can be redeemed for discounts on future services or exchanged for eco-friendly products in our rewards catalog. Check the 'Recycle and Earn' section for more details.",
-                "events": "We regularly organize e-waste collection drives and awareness workshops. You can find information about upcoming events or book an event for your organization by clicking on the 'Book an Event' link in the navigation menu."
-            };
+            
            
-            // Initial Quick Reply options
+            // Define quick reply options
             const initialQuickReplies = [
                 "What is e-waste?",
                 "Price estimation",
@@ -885,20 +860,14 @@
                 "Environmental benefits"
             ];
            
-            // Price estimation options
-            const priceEstimationOptions = [
-                "Laptop",
-                "Smartphone",
-                "Desktop",
-                "TV/Monitor"
-            ];
+            // Function to format messages with emojis and line breaks
            
-            // Helper function to create a message element
+            // Update createMessage function to handle formatted text
             function createMessage(text, sender) {
                 const messageDiv = document.createElement('div');
                 messageDiv.classList.add('message');
                 messageDiv.classList.add(sender === 'bot' ? 'bot-message' : 'user-message');
-                messageDiv.textContent = text;
+                messageDiv.innerHTML = text;
                 return messageDiv;
             }
            
@@ -930,77 +899,173 @@
             function hideTypingIndicator() {
                 typingIndicator.style.display = 'none';
             }
-           
-            // Simplified function to generate responses without external API
-            // Since the Gemini API call had issues, we'll use our knowledge base more comprehensively
-            function generateAIResponse(userMessage) {
-                // Convert to lowercase for matching
-                const lowerUserMessage = userMessage.toLowerCase();
-                
-                // First try exact matches from knowledge base
-                for (const [keyword, response] of Object.entries(knowledgeBase)) {
-                    if (lowerUserMessage.includes(keyword)) {
-                        return response;
-                    }
-                }
-                
-                // Handle common greetings
-                if (lowerUserMessage.match(/\b(hi|hello|hey|greetings)\b/)) {
-                    return "Hello! How can I help you with e-waste recycling today? Feel free to ask about our services or prices.";
-                }
-                
-                // Handle thanks
-                if (lowerUserMessage.match(/\b(thanks|thank you|thank)\b/)) {
-                    return "You're welcome! I'm happy to help. Is there anything else you'd like to know about e-waste recycling?";
-                }
-                
-                // Handle goodbyes
-                if (lowerUserMessage.match(/\b(bye|goodbye|see you|farewell)\b/)) {
-                    return "Goodbye! Feel free to chat again if you have more questions about e-waste recycling.";
-                }
-                
-                // Handle common e-waste related questions not covered in knowledge base
-                if (lowerUserMessage.includes("battery") || lowerUserMessage.includes("batteries")) {
-                    return "We accept all types of batteries for recycling, including lithium-ion, alkaline, and lead-acid batteries. These contain hazardous materials and should never be thrown in regular trash.";
-                }
-                
-                if (lowerUserMessage.includes("location") || lowerUserMessage.includes("center") || lowerUserMessage.includes("drop off")) {
-                    return "We have several drop-off locations across the city. You can find the nearest one by entering your pincode on our Services page, or we can arrange a pickup from your location!";
-                }
-                
-                // Fallback response
-                return "I'm not sure I understand that completely. Would you like to know about our e-waste recycling services, price estimates, or how our collection process works?";
-            }
+
+            const API_KEY = "AIzaSyBM7ExLLh2KG9NiRXX-SWeG9t2VfDrneJQ"; 
+            const MODEL = "gemini-2.0-flash";
+            const URL = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${API_KEY}`;
+
+            // Knowledge Base for E-Waste FAQs
+            const knowledgeBase = {
+            Intro: "",
+            // General E-Waste Information
+            "what is e-waste":
+                "E-waste refers to electronic waste - discarded electrical or electronic devices. This includes used electronics that are destined for reuse, resale, salvage, recycling, or disposal.",
+            "why is e-waste recycling important":
+                "E-waste recycling is crucial because electronic devices contain toxic substances like lead, mercury, and cadmium that can harm the environment and human health. Proper recycling also recovers valuable materials like gold, silver, copper, and rare earth elements, reducing the need for mining raw materials.",
+
+            // Price Estimation
+            "price estimation":
+                "I can help estimate the value of your e-waste. 💰 Here are typical price ranges:\n• Laptops: ₹1,000-5,000\n• Smartphones: ₹200-2,000\n• Desktops: ₹800-3,000\n• TVs: ₹500-2,000\n\nPlease specify which device you'd like to know about for more details.",
+
+            "laptop":
+                "Laptop pricing typically ranges from ₹1,000-5,000 depending on age and condition:\n• Recent models (1-3 years): ₹3,000-5,000\n• Older models (3-5 years): ₹1,500-3,000\n• Non-working laptops: ₹500-1,500\n\nWould you like to schedule a pickup? 💻",
+
+            "phone":
+                "Smartphone values vary based on model and condition:\n• Recent models (1-3 years): ₹800-2,000\n• Older models: ₹200-800\n• Non-working phones: ₹100-300\n\nWe ensure secure data wiping for all devices! 📱",
+
+            "desktop":
+                "Desktop computer values depend on specifications:\n• Recent systems: ₹1,500-3,000\n• Older systems: ₹800-1,500\n• Non-working: ₹500-1,000\n\nThis includes the CPU unit only. Monitors are priced separately. 🖥️",
+
+            "tv": 'TV recycling values vary by type:\n• LED/LCD (32"+): ₹500-2,000\n• CRT TVs: ₹200-500\n• Smart TVs: ₹1,000-2,500\n\nFree pickup available for TVs over 32 inches! 📺',
+
+            // Collection Process
+            "collection":
+                "Our collection process is simple:\n1️⃣ Schedule pickup via website/phone\n2️⃣ Our team arrives at your location\n3️⃣ We evaluate and weigh your e-waste\n4️⃣ Receive immediate payment\n\nWould you like to schedule a pickup?",
+
+            "pickup":
+                "Yes! We offer free pickup service for:\n• Orders over 10kg\n• Large items (TVs, refrigerators)\n• Bulk collections\n\nWe're available 7 days a week! 🚛",
+
+            "schedule":
+                "You can schedule a pickup in 3 ways:\n1. Click the 'Book a Pickup' button above\n2. Call us at 9967960193\n3. Email us at navnirman.ai@gmail.com\n\nWe'll confirm your slot within 2 hours! 📅",
+
+            // Environmental Impact
+            "environmental benefits":
+                "Proper e-waste recycling prevents toxic materials from entering landfills and water sources, reducing pollution. It also conserves natural resources by recovering valuable metals and materials, reducing the need for mining. Additionally, it saves energy - recycling aluminum uses 95% less energy than producing it from raw materials.",
+
+            // Laws and Regulations
+            "e-waste laws":
+                "In India, e-waste management is regulated under the E-Waste Management Rules, 2016 (amended in 2018). These rules implement the Extended Producer Responsibility (EPR) concept, making manufacturers responsible for collecting and properly disposing of end-of-life products.",
+
+            // Website specific information
+            "how to schedule":
+                "You can schedule a pickup through our website by clicking on the 'Book a Pickup' button in the carousel or heading to the Services page. Alternatively, you can call us at the number in the footer.",
+            "rewards":
+                "Our rewards program gives you points for each item recycled. These points can be redeemed for discounts on future services or exchanged for eco-friendly products in our rewards catalog. Check the 'Recycle and Earn' section for more details.",
+            "events":
+                "We regularly organize e-waste collection drives and awareness workshops. You can find information about upcoming events or book an event for your organization by clicking on the 'Book an Event' link in the navigation menu.",
+
+            // New Questions and Answers
+            "business disposal":
+                "Special services for businesses: 🏢\n• Bulk collection available\n• Corporate compliance certificates\n• Asset tracking and reporting\n• Regular pickup schedules\n• Volume-based pricing\n• Dedicated account manager\n\nContact us for corporate rates!",
+
+            "recycling certificate":
+                "Yes, we provide recycling certificates! 📄\n• Detailed inventory of items recycled\n• Weight and category breakdown\n• Environmental impact statement\n• Compliance documentation\n• Track your green initiatives\n\nPerfect for corporate compliance!",
+
+            "payment methods":
+                "We offer multiple payment options: 💳\n• Instant cash payment\n• Bank transfer\n• Digital wallets (PayTM, GPay)\n• Corporate invoicing\n• Reward points\n\nChoose what works best for you!",
+
+            "warranty items":
+                "For items under warranty: ⚠️\n• Check warranty status first\n• Contact manufacturer for replacement\n• We can guide you through the process\n• Free evaluation service\n• Responsible disposal if needed\n\nLet us help you make the right choice!",
+
+            "bulk pickup":
+                "Bulk pickup benefits: 📦\n• Free service for 10+ items\n• Priority scheduling\n• Better rates for large quantities\n• Same-day service available\n• Professional handling\n• Complete documentation\n\nIdeal for office clearance!",
+
+            "ewaste impact":
+                "Impact of improper e-waste disposal: 🌍\n• Soil contamination\n• Water pollution\n• Air quality issues\n• Health risks\n• Resource wastage\n• Climate change contribution\n\nLet's recycle responsibly!",
+
+            "rewards program":
+                "Join our rewards program: 🎁\n• Points for every item recycled\n• Additional bonus for referrals\n• Monthly recycling challenges\n• Special member rates\n• Exclusive eco-friendly products\n• Regular rewards updates\n\nStart earning today!",
+
+            "corporate program":
+                "Corporate recycling programs: 💼\n• Customized collection schedules\n• Volume-based pricing\n• Compliance reporting\n• Employee awareness workshops\n• CSR initiative support\n• Asset management services\n\nLet's discuss your requirements!",
+
+            "recycling steps":
+                "Our recycling process: ♻️\n1. Collection & Sorting\n2. Data Security Check\n3. Dismantling\n4. Material Separation\n5. Resource Recovery\n6. Eco-friendly Processing\n7. Documentation\n\nAll steps follow environmental guidelines!",
+
+            "documents required":
+                "Required documents: 📝\n• Valid ID proof\n• Address proof\n• Authorization letter (if corporate)\n• Item ownership proof\n• Warranty cards (if applicable)\n\nWe'll guide you through the process!",
+
+            // Additional Questions and Answers
+            "working hours":
+                "Our service hours: ⏰\n• Monday to Saturday: 9:00 AM - 7:00 PM\n• Sundays: 10:00 AM - 5:00 PM\n• Emergency pickups available\n• Holiday schedule on website\n\nBook your preferred time slot!",
+
+            "minimum quantity":
+                "Minimum collection details: 📊\n• Regular pickup: No minimum\n• Free pickup: 5kg or more\n• Bulk rates: 10kg or more\n• Corporate pickup: Any quantity\n\nEvery item counts towards a greener future!",
+
+            "preparation":
+                "How to prepare items for recycling: 📦\n• Remove personal data\n• Collect all accessories\n• Keep original packaging (if possible)\n• Separate batteries\n• Group similar items\n• List known issues\n\nNeed help? We can guide you!",
+
+            "dangerous items":
+                "Warning! These items need special handling: ⚠️\n• Damaged batteries\n• Broken screens\n• Water-damaged devices\n• Items with chemical leaks\n• Smoke-damaged electronics\n\nPlease inform us beforehand for safe handling!",
+
+            "packing guidelines":
+                "Packing tips for e-waste: 📦\n• Use original boxes if available\n• Wrap items separately\n• Secure loose parts\n• Label fragile items\n• Keep batteries separate\n• Don't use metallic wires\n\nNeed packing materials? Let us know!",
+
+            "instant quote":
+                "Get an instant quote by providing: 💭\n• Device type and brand\n• Age of device\n• Working condition\n• Physical condition\n• Accessories included\n\nShare details for accurate pricing!",
+
+            "cancellation policy":
+                "Pickup cancellation policy: ℹ️\n• Free cancellation 4 hours before\n• Reschedule anytime\n• No penalty first time\n• Inform via call/WhatsApp\n• Automatic rebooking option\n\nWe understand plans change!",
+
+            "festival rates":
+                "Special festival offers: 🎉\n• Diwali green drive\n• Christmas recycling bonus\n• New year special rates\n• Educational institution drives\n• Community collection events\n\nCheck current promotions!",
+
+            "recycling myths":
+                "Common recycling myths: 🤔\n• Myth: Data can be recovered\n• Truth: We use military-grade wiping\n• Myth: Small items don't matter\n• Truth: Every item is valuable\n• Myth: Recycling is costly\n• Truth: We offer competitive rates\n\nAsk us for facts!",
+
+            "certification":
+                "Our Certifications: ✅\n• ISO 14001:2015\n• R2 Certification\n• E-waste License\n• Quality Management\n• Safety Standards\n• Environmental Compliance\n\nFully authorized recycler!"
+            };
            
             // Function to process user message and get bot response
             async function botRespond(userMessage) {
                 showTypingIndicator();
-                
+
                 try {
-                    const response = await fetch('your-server-url/chat', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ message: userMessage })
+                    const response = await fetch(URL, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            contents: [{
+                                parts: [{
+                                    text: `You are Navie, an e-waste recycling assistant. Your task is to help users with e-waste recycling questions using the following knowledge base. If a question is not related to e-waste or isn't covered in the knowledge base, politely inform the user that you can only answer e-waste-related questions.
+
+Knowledge Base: ${JSON.stringify(knowledgeBase)}
+
+User Question: ${userMessage}
+
+Please provide a helpful, friendly response based on the knowledge base. If the exact question isn't in the knowledge base, try to find the most relevant information to help the user.`
+                                }]
+                            }]
+                        })
                     });
-                    
+
                     if (!response.ok) {
-                        throw new Error('Server response was not ok');
+                        throw new Error(`HTTP error! status: ${response.status}`);
                     }
-                    
-                    const data = await response.json();
-                    const botResponse = data.response;
-                    
-                    // Rest of your existing display logic...
+                            
+
+                    const result = await response.json();
+
+                    // Hide typing indicator
                     hideTypingIndicator();
-                    chatbotMessages.appendChild(createMessage(botResponse, 'bot'));
+
+                    // Add bot response to chat
+                    if (result.candidates && result.candidates[0] && result.candidates[0].content) {
+                        const botResponse = result.candidates[0].content.parts[0].text;
+                        chatbotMessages.appendChild(createMessage(botResponse, 'bot'));
+                    } else {
+                        chatbotMessages.appendChild(createMessage("I'm sorry, I couldn't process your request. Please try again.", 'bot'));
+                    }
+
+                    // Scroll to bottom
                     chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
-                    
+
                 } catch (error) {
                     console.error('Error:', error);
                     hideTypingIndicator();
-                    chatbotMessages.appendChild(createMessage("Sorry, I'm having trouble connecting to the server. Please try again later.", 'bot'));
+                    chatbotMessages.appendChild(createMessage("I'm sorry, I encountered an error. Please try again later.", 'bot'));
+                    chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
                 }
             }
            

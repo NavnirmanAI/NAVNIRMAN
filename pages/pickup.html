@@ -21,7 +21,7 @@
     <script defer src="../javascript/pickup-scheduler.js"></script>
     <script defer src="../javascript/order-status.js"></script>
     <link rel="stylesheet" href="../stylesheet/style3.css" />
-    <link rel="stylesheet" href="../javascript/cart.css" />
+    <link rel="stylesheet" href="../stylesheet//cart.css" />
     <style>
       /* Profile Section Styles */
       .profile-section {
@@ -200,7 +200,7 @@
   <body>
     <div class="main-nav">
       <div class="main-nav-left">
-        <a href="index.html" class="home-btn">HOME</a>
+        <a href="../index.html" class="home-btn">HOME</a>
         <div class="categories-dropdown">
           <button class="categories-btn">
             Categories <i class="fas fa-chevron-down"></i>
@@ -651,7 +651,7 @@
         auth
           .signOut()
           .then(() => {
-            window.location.href = "index.html";
+            window.location.href = "../index.html";
           })
           .catch((error) => {
             console.error("Error signing out:", error);
